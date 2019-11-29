@@ -1,0 +1,222 @@
+import random
+import numpy
+
+man = [ "Aaron",
+        "Adalbert",
+        "Adam",
+        "Adrian",
+        "Adriano",
+        "Ahmad",
+        "Albrecht",
+        "Aldhelm",
+        "Alexander",
+        "Alfred",
+        "Ali",
+        "Alois",
+        "Alwin",
+        "Amadeus",
+        "Amos"  ]
+
+woman = [
+        "Abigail",
+        "Ada",
+        "Adela",
+        "Adele",
+        "Adelgunde",
+        "Adelheid",
+        "Adelinde",
+        "Adina",
+        "Adriana",
+        "Adriane",
+        "Adrienne",
+        "Agathe",
+        "Agnes",
+        "Alberta",
+        "Alexandra",
+        "Alice",
+        "Alma",
+        "Almut",
+        "Aloisia",
+        "Alraune",
+        "Alrun",
+        "Alwine",
+        "Amalie",
+        "Amelie",
+        "Amina",
+        "Anabel",
+        "Anastasia",
+        "Andrea",
+        "Angela",
+        "Angelika",
+        "Angelina",
+        "Anita",
+        "Anja",
+        "Anka",
+        "Anke",
+        "Anna"  ]
+
+lastname = [
+        "Abendroth",
+        "Abraham",
+        "Abt",
+        "Adam",
+        "Albert",
+        "Albrecht",
+        "Amalie",
+        "Anders",
+        "Andres",
+        "Appel",
+        "Baumann",
+        "Becherer",
+        "Becker",
+        "Behm",
+        "Biermann",
+        "Böhm",
+        "Böll",
+        "Braun",
+        "Brühlmeier",
+        "Calvin",
+        "Christiansen",
+        "Curtius",
+        "Diederich",
+        "Dürrschnabel",
+        "Eschenburg",
+        "Falk",
+        "Fehling",
+        "Fischer",
+        "Forge",
+        "Förster",
+        "Frank",
+        "Franz",
+        "Frenzel",
+        "Freud",
+        "Freund",
+        "Friedemann",
+        "Fröhlich",
+        "Gärtner",
+        "Gerster",
+        "Glaser",
+        "Götz",
+        "Gruber",
+        "Grubner",
+        "Hackmann",
+        "Haller",
+        "Heider",
+        "Heine",
+        "Henne",
+        "Hering",
+        "Herold",
+        "Herrmann",
+        "Herzog",
+        "Hintz",
+        "Hoffmann",
+        "Honecker",
+        "Howaldt",
+        "Huber",
+        "Hünlein",
+        "Ines",
+        "Ingo",
+        "Ineichen",
+        "Jauch",
+        "Jung",
+        "Jörg",
+        "Jakobi",
+        "Kaiser",
+        "Kästner",
+        "Klaus",
+        "Knebel",
+        "Köhler",
+        "Kolmar",
+        "Körner",
+        "Kosba",
+        "Krämer",
+        "Krause",
+        "Krüger",
+        "Krupp",
+        "Kühn",
+        "Kurz",
+        "Lai",
+        "Lammers",
+        "Landgraf",
+        "Landzettel",
+        "Leber",
+        "Lehmann",
+        "Lehner",
+        "Lenz",
+        "Löchte",
+        "Lohmann",
+        "Lorenz",
+        "Lücking",
+        "Ludwig",
+        "Luhmann",
+        "Mach",
+        "Marg",
+        "Marx",
+        "Meier",
+        "Mester",
+        "Meyer",
+        "Micus",
+        "Müller",
+        "Naumann",
+        "Neumann",
+        "Nietzsche"]
+
+"""gibt random einen Vornamen aus"""
+
+def Vorname(lste): #lste entweder man oder woman
+  
+  vlltdplname = numpy.random.choice([i for i in range(8)]+[100]) #jeder wert gleiche Trefferquote.. bedeutet else-Fall (doppelname) hat eine 10 prozentige chance)
+  if vlltdplname < 10 :
+    return numpy.random.choice(lste)
+  else :
+    name1 = numpy.random.choice(lste) 
+    name2 = name1
+    while name1 == name2 :
+      name2 = numpy.random.choice(lste)
+    return name1+"-"+name2
+
+def mVorname():
+  Vorname(man)
+
+def wVorname() :
+  Vorname(woman)
+
+#Kurztest
+#for i in range(20):
+ # print (Vorname(woman))
+  
+  
+  
+def Nachname(): #gleiches Spiel wie mit Vornamen.. bloß mit anderen Wahrscheinlichkeiten
+  
+  vlltdplname = numpy.random.choice([i for i in range(16)]+[100, 101, 102]) 
+  if vlltdplname < 16 :
+    return numpy.random.choice(lastname)
+  else :
+    name1 = numpy.random.choice(lastname) 
+    name2 = name1
+    while name1 == name2 :
+      name2 = numpy.random.choice(lastname)
+    return name1+"-"+name2
+	
+def main() :
+
+   namensliste = []
+   for i in range(100) :
+     gender = numpy.random.choice([man, woman])
+     if gender == woman :
+       degree = numpy.random.choice(["Dr." for i in range(19)]+["" for i in range((2000-19))]) #als frau hat man eine geringere Wahrscheinlichkeit auf einen Titel
+       namensliste.append([degree,Vorname(woman),Nachname()])
+     else :
+        degree = numpy.random.choice(["Dr." for i in range(21)]+["" for i in range((2000-21))])
+        namensliste.append([degree,Vorname(man),Nachname()])
+   for i in namensliste :
+     if i[0] == "" :
+       print(i[1],i[2])
+     else :
+       print(i[0],i[1],i[2])
+
+	   
+	 
+	 
+main()
