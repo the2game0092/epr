@@ -1,5 +1,6 @@
 import random
 import numpy
+import math
 
 man = [ "Aaron",
         "Adalbert",
@@ -206,17 +207,70 @@ def main() :
      gender = numpy.random.choice([man, woman])
      if gender == woman :
        degree = numpy.random.choice(["Dr." for i in range(19)]+["" for i in range((2000-19))]) #als frau hat man eine geringere Wahrscheinlichkeit auf einen Titel
-       namensliste.append([degree,Vorname(woman),Nachname()])
+       namensliste.append([degree,Vorname(woman),Nachname(), "w"])
      else :
         degree = numpy.random.choice(["Dr." for i in range(21)]+["" for i in range((2000-21))])
-        namensliste.append([degree,Vorname(man),Nachname()])
+        namensliste.append([degree,Vorname(man),Nachname(), "m"])
    for i in namensliste :
      if i[0] == "" :
        print(i[1],i[2])
      else :
        print(i[0],i[1],i[2])
+   return namensliste
 
 	   
 	 
-	 
-main()
+def vornamentest(x):     #Test für Doppelnamen
+    a = 0
+    for i in x :
+      if "-" in i[1] :
+       a += 1
+      else :
+         a = a
+    if abs(len(x)*0.1-a) > 2*(math.sqrt(len(x)*0.1*0.9)) :
+      print ("false")
+    else :
+      print ("true")
+
+def nachnamentest(x):     #Test für Doppelnamen
+    a = 0
+    for i in x :
+      if "-" in i[2] :
+       a += 1
+      else :
+         a = a
+    if abs(len(x)*0.15-a) > 2*(math.sqrt(len(x)*0.15*0.85)) :
+      print ("false")
+    else :
+      print ("true")
+
+def gendertest(x):     #Test für Doppelnamen
+    m = 0
+    for i in x :
+      if "m" == i[3] :
+       m += 1
+      else :
+       m = m
+    if abs(len(x)*0.5-m) > 2*(math.sqrt(len(x)*0.5*0.5)) :
+      print ("false")
+    else :
+      print ("true")
+
+def drtest(x):     #Test für Doppelnamen
+    m = 0
+    w = 0
+    for i in x :
+      if "Dr." == i[0] :
+        if i[3] == "m" :
+          m += 1
+        else :
+          w += 1
+      else :
+       m = m
+    if (abs(len(x)*0.01*1.05-m) > 2*(math.sqrt(len(x)*0.01*1.05*(1-(0.01*1.05)))) and abs(len(x)*0.01*0.95-w) > 2*(math.sqrt(len(x)*0.01*0.95*(1-(0.01*0.95))))) : 
+      print ("false")
+    else :
+      print ("true")
+
+drtest(main())
+
