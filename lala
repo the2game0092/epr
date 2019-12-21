@@ -10,10 +10,17 @@ Maexchen = [21]
 other_values = [31,32,41,43,51,52,53,54,61,62,63,64,65]
 all_values = other_values + Pasch + Maexchen + Hamburger # all possible values sorted by their weight
 
+
 def deduct_Points(playerindex, players, lossvalue):
   ''' A function for reducing the In-Game Points of given player(index) within a list of lists of players and their curr Points'''
  
-  return [[players[playerindex][0],players[playerindex][1]- lossvalue] if players.index(x) == playerindex else x for x in players] #returns an updated list
+  return [[players[playerindex][0],players[playerindex][1] - lossvalue*players[playerindex][2]] if players.index(x) == playerindex else x for x in players] #returns an updated list
+
+
+def godmode(playerindex, players):
+  ''' A function cheating the player into godmode by changing his 3rd index (relevant for loss funtion).'''
+ 
+  return [[players[playerindex][0],players[playerindex][1], 0] if players.index(x) == playerindex else x for x in players] #returns an updated list
    
   
 def create_players(num_of_players, points_per_player):
@@ -27,11 +34,42 @@ def create_players(num_of_players, points_per_player):
 	    print("This name is already taken. Please choose another one.")
 	  else :
 	    list_of_players.append(name.strip())
-  return [[i, points_per_player] for i in list_of_players]
-	
-def visuals(x):
+  return [[i, points_per_player, 1] for i in list_of_players]
 
-  return x
+def visuals(values):
+    dicevalues = []
+    for i in str(values):
+        if i == "1":
+            dicevalues.append("⚀")
+        elif i == "2":
+            dicevalues.append("⚁")
+        elif i == "3":
+            dicevalues.append("⚂")
+        elif i == "4":
+            dicevalues.append("⚃")
+        elif i == "5":
+            dicevalues.append("⚄")
+        else :
+            dicevalues.append("⚅")
+    print(dicevalues[0], dicevalues[1])
+	
+
+
+def clear_Board() :
+  """Clears the board by spamming print()."""
+
+  for i in range(200):
+    print()
+
+def loss_value(dice ,maexchen, hamburger) :
+  """Calculates the value of points, which have to be removed of the player losing the run"""
+
+  if dice == maexchen :
+    return 2
+  elif dice == hamburger :
+    return 3
+  else : 
+    return 1
 	
 
 def roll_dice() :
@@ -41,7 +79,7 @@ def roll_dice() :
   dice_2 = random.randint(1,6)
   return (10*max(dice_1,dice_2) + min(dice_1, dice_2))
 
-def believers_turn(active_player, rounds_turns, prev_dice):
+def believers_turn_old(active_player, rounds_turns, prev_dice):
   """Platzhalter"""
 
   if rounds_turns == 0 :
@@ -72,6 +110,50 @@ def believers_turn(active_player, rounds_turns, prev_dice):
         break
     return [dice, pinput]
 
+def believers_turn(active_player, rounds_turns, prev_dice):
+  """Platzhalter"""
+
+  if rounds_turns == 0 :
+    print(active_player[0], "it's your turn.")
+    pinput = input("Press Enter to roll the dice.")
+    if pinput == "maxilein":
+      dice = 21
+    elif pinput == "hamburger" :
+      dice = 42
+    else :
+      dice = roll_dice()
+    print("It's", dice)
+    visuals(dice)
+    while True :
+      print("What value do you want to hand over to your opponent ?")
+      pinput = int(input("Value :"))
+      if pinput not in all_values :
+        print("Please Enter a number within the given range ")
+      else :
+        break
+    return [dice, pinput]
+  else :
+    pinput = input("Press Enter to roll the dice.")
+    if pinput == "maxilein":
+      dice = 21
+    elif pinput =="hamburger":
+      dice = 42
+    else :
+      dice = roll_dice()
+    print("It's", dice)
+    visuals(dice)
+    while True :
+      print("What value do you want to hand over to your opponent ?")
+      pinput = int(input("Value :"))
+      if pinput not in all_values :
+        print("Please Enter a number within the given range ")
+      elif all_values.index(pinput) < all_values.index(prev_dice):
+        print("Please Enter a bigger number then your opponents one.")
+      else : 
+        break
+    return [dice, pinput]
+
+
 def f(x):
 
   players = create_players(x, 1)
@@ -88,6 +170,7 @@ def f(x):
         playerindex = (playerindex + direction) % len(players)
         turns += 1
       else :
+        clear_Board()
         print(players[playerindex][0], "it's your turn.")
         print(players[playerindex-direction][0], "claims to have gotten", claim_dice)
         believe = input("Enter 1, if you believe him")
@@ -101,6 +184,7 @@ def f(x):
           if claim_dice <= prev_dice :
             players = deduct_Points(playerindex, players, 1)
             if players[playerindex][1] < 1 :
+              print(players[playerindex][0], "lost.")
               players.remove(players[playerindex])
             else :
               players = players
@@ -114,4 +198,56 @@ def f(x):
         print(players[0][0], "wins. Congratulations")  
         break  
       else :
-        continue 
+        binput = input("Press Enter to continue.")
+
+def maxi(num_of_players, points_per_player):
+
+  players = create_players(num_of_players, points_per_player)
+  turns = 0
+  claim_dice = 0
+  prev_dice = 0
+  direction = 1
+  playerindex = 0
+  while len(players) > 1 :
+      clear_Board()
+      if turns == 0 :
+        result = believers_turn(players[playerindex], turns, claim_dice)
+        claim_dice = result[1]
+        prev_dice = result[0]
+        turns += 1	    
+      else :
+        print(players[playerindex][0], "it's your turn.")
+        print(players[playerindex-direction][0], "claims to have gotten", claim_dice)
+        believe = input("Enter 1, if you believe him")
+        if believe == "1" and claim_dice < Hamburger :
+          result = believers_turn(players[playerindex], turns, claim_dice)
+          claim_dice = result[1]
+          prev_dice = result[0]
+        else :
+          pinput = input("Press enter to reveal, what your opponent has up his sleeve.")
+          if pinput == "god" :
+            players = godmode(playerindex, players)
+          else :
+            players = players
+          visuals(prev_dice)
+          turns = 0
+          if claim_dice <= prev_dice :
+            players = deduct_Points(playerindex, players, loss_value(prev_dice, 21, 42))
+            if players[playerindex][1] < 1 :
+              print(players[(playerindex)],"lost.")
+              players.remove(players[playerindex])
+            else :
+              players = players
+          else  :
+            players = deduct_Points((playerindex-direction) % len(players), players, loss_value(prev_dice, 21, 42))
+            if players[(playerindex-direction) % len(players)][1] < 1 :
+              print(players[(playerindex-direction) % len(players)],"lost.")
+              players.remove(players[(playerindex-direction) % len(players)])
+            else :
+              players = players
+      if len(players) == 1 :
+        print(players[0][0], "wins. Congratulations")  
+        break  
+      else :
+        binput = input("Press Enter to continue.")
+      playerindex = (playerindex + direction) % len(players)
